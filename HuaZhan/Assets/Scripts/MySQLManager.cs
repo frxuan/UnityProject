@@ -30,12 +30,12 @@ public class MySQLManager : MonoBehaviour
         /*try
         {
             connection.Open();
-            Debug.Log("数据库连接成功");
+            Debug.Log("???????????");
             connection.Close();
         }
         catch
         {
-            Debug.Log("数据库连接失败");
+            Debug.Log("????????????");
         }*/
     }
 
@@ -53,12 +53,20 @@ public class MySQLManager : MonoBehaviour
             MySqlDataReader reader = command.ExecuteReader();
             if (reader.Read())
             {
-                loginTitle.text = "登录成功";
+                #region agent log
+                DebugSessionLogger.Log("run1", "H4", "MySQLManager.cs:57", "Login success branch", $"user={user1}");
+                #endregion
+                UserSession.SetCurrentUser(user1);
+                #region agent log
+                DebugSessionLogger.Log("run1", "H4", "MySQLManager.cs:61", "Before reload current user progress", "calling ExhibitionProgressManager.Instance.ReloadForCurrentUser");
+                #endregion
+                ExhibitionProgressManager.Instance.ReloadForCurrentUser();
+                loginTitle.text = "\u767b\u5f55\u6210\u529f";
                 StartCoroutine(ChangeScene());
             }
             else
             {
-                loginTitle.text = "登录失败，账号或密码有误";
+                loginTitle.text = "\u767b\u5f55\u5931\u8d25\uff0c\u8d26\u53f7\u6216\u5bc6\u7801\u6709\u8bef";
             }
         }
         finally { connection.Close(); }
@@ -77,11 +85,11 @@ public class MySQLManager : MonoBehaviour
                 command.Parameters.AddWithValue("SetUser", setUser1);
                 command.Parameters.AddWithValue("SetPassword", setPassword1);
                 command.ExecuteNonQuery();
-                loginTitle.text = "注册成功";
+                loginTitle.text = "\u6ce8\u518c\u6210\u529f";
             }
             else
             {
-                loginTitle.text = "账号或密码不能为空！";
+                loginTitle.text = "\u8d26\u53f7\u6216\u5bc6\u7801\u4e0d\u80fd\u4e3a\u7a7a\uff01";
             }
         }
         finally
